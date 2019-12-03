@@ -5,7 +5,7 @@
 // https://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use clap::{App, Arg, ArgMatches};
+use clap::ArgMatches;
 use colored::*;
 use regex::Regex;
 use std::error::Error;
@@ -16,6 +16,7 @@ use yaml_rust::yaml::{Yaml, YamlLoader};
 
 #[macro_use]
 mod messages;
+mod cli;
 
 #[macro_use]
 extern crate lazy_static;
@@ -23,35 +24,7 @@ extern crate lazy_static;
 type Result<T> = ::std::result::Result<T, Box<dyn Error>>;
 
 fn main() {
-    let args = App::new("apply-user-defaults")
-        .version("0.1.0")
-        .author("Michael Sanders <michael.sanders@fastmail.com>")
-        .about("Apply macOS user defaults in bulk from YAML file.")
-        .arg(
-            Arg::with_name("no-env")
-                .long("no-env")
-                .help("Disable environment variable expansion"),
-        )
-        .arg(
-            Arg::with_name("quiet")
-                .short("q")
-                .long("quiet")
-                .help("Quiet mode: suppress normal output"),
-        )
-        .arg(
-            Arg::with_name("verbose")
-                .short("v")
-                .long("verbose")
-                .help("Verbose mode: include diagnostic info in output"),
-        )
-        .arg(
-            Arg::with_name("FILE")
-                .help("Sets the input file to use")
-                .required(true),
-        )
-        .get_matches();
-
-    try_main(args).unwrap_or_else(|err| {
+    try_main(cli::build_cli().get_matches()).unwrap_or_else(|err| {
         eprintln!("{}: {}", "Error".red(), err);
         process::exit(1)
     });
@@ -139,14 +112,14 @@ fn write_default(domain: &str, key: &str, value: &Yaml, expand_env_enabled: bool
 /// with matching environment variables.
 fn expand_env_template(body: &str) -> std::string::String {
     lazy_static! {
-        static ref RE: Regex = Regex::new(r"([^\\]\$\{(\w+)\})").unwrap();
+        static ref RE: Regex = Regex::new(r"([^\\]|^)(\$\{(\w+)\})").unwrap();
         static ref RE_ESCAPED: Regex = Regex::new(r"(\\(\$\{(\w+)\}))").unwrap();
     }
 
     let mut output: std::string::String = body.into();
     for cap in RE.captures_iter(body) {
-        let outer = &cap.get(1).unwrap();
-        let inner = &cap.get(2).unwrap();
+        let outer = &cap.get(2).unwrap();
+        let inner = &cap.get(3).unwrap();
         if let Ok(replacement) = env::var(inner.as_str()) {
             output.replace_range(outer.start()..outer.end(), replacement.as_str());
         }

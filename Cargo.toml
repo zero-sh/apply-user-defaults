@@ -4,10 +4,20 @@ version = "0.1.0"
 authors = ["Michael Sanders <michael.sanders@fastmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
+build = "build.rs"
 
 [dependencies]
-clap = "2.33"
 colored = "1.9"
 lazy_static = "1.4"
 regex = "1.3"
 yaml-rust = "0.4"
+
+[dependencies.clap]
+version = "2.33"
+default-features = false
+features = ["color", "suggestions"]
+
+[build-dependencies.clap]
+version = "2.33"
+default-features = false
+features = ["color", "suggestions"]
