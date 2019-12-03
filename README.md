@@ -41,6 +41,31 @@ $ apply-user-defaults path-to-file.yaml --verbose
 Success! Applied defaults.
 ```
 
+## Template Expansion
+
+Environment variables can also be included using shell parameter expansion
+syntax. For example:
+
+```yaml
+com.apple.finder:
+  # Finder > Preferences > New Finder windows show > Home directory.
+  NewWindowTargetPath: "file://${HOME}"
+```
+
+will evaluate to: 
+
+```sh
+defaults write com.apple.finder NewWindowTargetPath -string "file://$HOME"
+```
+
+where `$HOME` is the value contained in the `HOME` environment variable.
+
+This only applies when the string in the YAML file begins with a dollar sign and
+is wrapped in braces (just using `$HOME` won't work).
+
+To disable, you may pass the flag `--no-env` or escape the dollar sign, e.g.
+`'\\${VALUE}'`.
+
 ## Installation
 
 `apply-user-defaults` can be installed with cargo:
