@@ -2,9 +2,19 @@
 name = "apply-user-defaults"
 version = "0.1.0"
 authors = ["Michael Sanders <michael.sanders@fastmail.com>"]
-edition = "2018"
+description = "A small utility to set macOS user defaults declaratively from a YAML file."
+repository = "https://github.com/zero-sh/apply-user-defaults"
+readme = "README.md"
 license = "MIT OR Apache-2.0"
 build = "build.rs"
+edition = "2018"
+keywords = ["macos", "user", "defaults", "declarative", "yaml"]
+categories = [
+    "command-line-utilities",
+    "configuration",
+    "os::macos-apis",
+]
+
 
 [dependencies]
 colored = "1.9"
