@@ -11,7 +11,7 @@ edition = "2018"
 keywords = ["macos", "user", "defaults", "declarative", "yaml"]
 categories = [
     "command-line-utilities",
-    "configuration",
+    "config",
     "os::macos-apis",
 ]
 
