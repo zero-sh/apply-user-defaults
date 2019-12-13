@@ -1,0 +1,14 @@
+com.apple.desktopservices:
+  # Disable .DS_Store files on network drives.
+  DSDontWriteNetworkStores: true
+
+com.apple.dock:
+  # System Preferences > Dock > Automatically hide and show the Dock.
+  autohide: true
+
+com.apple.finder:
+  # Finder > Preferences > New Finder windows show > Home directory.
+  NewWindowTarget: PfHm
+
+  # Finder > Preferences > New Finder windows show > Home directory.
+  NewWindowTargetPath: 'file://${HOME}'
