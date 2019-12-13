@@ -1,0 +1,16 @@
+language: rust
+os: osx
+matrix:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+rust:
+  - stable
+  - beta
+  - nightly
+before_install:
+  - rustup component add clippy-preview
+script:
+  - cargo build --verbose --all
+  - cargo clippy -- -D warnings
+  - cargo test --verbose
