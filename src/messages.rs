@@ -31,6 +31,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 
 static QUIET_OUTPUT: AtomicBool = AtomicBool::new(false);
+static DRY_RUN_OUTPUT: AtomicBool = AtomicBool::new(false);
 static VERBOSE_OUTPUT: AtomicBool = AtomicBool::new(false);
 
 /// Emit a successful message to stdout, unless quiet output is enabled.
@@ -49,6 +50,20 @@ macro_rules! message {
 macro_rules! verbose_message {
     ($($tt:tt)*) => {
         if !crate::messages::quiet_output() && crate::messages::verbose_output() {
+            println!("{} {}", "==>".bold().blue(), format!($($tt)*));
+        }
+    }
+}
+
+/// Emit a non-fatal diagnostic message to stdout, if dry run or verbose output
+/// is enabled and quiet output is disabled.
+#[macro_export]
+macro_rules! command_message {
+    ($($tt:tt)*) => {
+        if !crate::messages::dry_run_output() {
+            // Distinguish between verbose and dry-run modes.
+            verbose_message!($($tt)*)
+        } else if !crate::messages::quiet_output() {
             println!("{} {}", "==>".bold().yellow(), format!($($tt)*));
         }
     }
@@ -64,6 +79,22 @@ pub fn quiet_output() -> bool {
 /// By default, they are shown.
 pub fn set_quiet_output(yes: bool) {
     QUIET_OUTPUT.store(yes, Ordering::SeqCst)
+}
+
+/// Returns true if and only if dry_run messages should be shown.
+pub fn dry_run_output() -> bool {
+    DRY_RUN_OUTPUT.load(Ordering::SeqCst)
+}
+
+/// Set whether "dry_run" related messages should be shown or not.
+///
+/// By default, they are not shown.
+///
+/// Note that this is overridden if `quiet_output` is enabled. Namely, if
+/// `quiet_output` is enabled, then "dry_run" messages are never shown,
+/// regardless of this setting.
+pub fn set_dry_run_output(yes: bool) {
+    DRY_RUN_OUTPUT.store(yes, Ordering::SeqCst)
 }
 
 /// Returns true if and only if verbose messages should be shown.

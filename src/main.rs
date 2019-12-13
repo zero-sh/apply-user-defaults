@@ -37,6 +37,7 @@ fn try_main(args: ArgMatches) -> Result<()> {
     let expand_env_enabled = !args.is_present("no-env");
 
     messages::set_quiet_output(args.is_present("quiet"));
+    messages::set_dry_run_output(args.is_present("dry-run"));
     messages::set_verbose_output(args.is_present("verbose"));
 
     let docs = YamlLoader::load_from_str(&body)?;
@@ -61,7 +62,9 @@ fn try_main(args: ArgMatches) -> Result<()> {
         }
     }
 
-    message!("Applied defaults.");
+    if !messages::dry_run_output() {
+        message!("Applied defaults.");
+    }
     Ok(())
 }
 
@@ -84,26 +87,30 @@ fn write_default(domain: &str, key: &str, value: &Yaml, expand_env_enabled: bool
     } else {
         value
     };
-    verbose_message!("defaults write {} {} {} {}", domain, key, value_type, value);
 
-    let output = Command::new("defaults")
-        .arg("write")
-        .arg(domain)
-        .arg(key)
-        .arg(value_type)
-        .arg(value)
-        .output()
-        .map_err(|err| format!("Failed to invoke defaults command. {}", err))?;
-
-    io::stdout().write_all(&output.stdout)?;
-    io::stderr().write_all(&output.stderr)?;
-
-    if output.status.success() {
+    command_message!("defaults write {} {} {} {}", domain, key, value_type, value);
+    if messages::dry_run_output() {
         Ok(())
     } else {
-        match output.status.code() {
-            Some(code) => process::exit(code),
-            None => Err("Process terminated by signal".into()),
+        let output = Command::new("defaults")
+            .arg("write")
+            .arg(domain)
+            .arg(key)
+            .arg(value_type)
+            .arg(value)
+            .output()
+            .map_err(|err| format!("Failed to invoke defaults command. {}", err))?;
+
+        io::stdout().write_all(&output.stdout)?;
+        io::stderr().write_all(&output.stderr)?;
+
+        if output.status.success() {
+            Ok(())
+        } else {
+            match output.status.code() {
+                Some(code) => process::exit(code),
+                None => Err("Process terminated by signal".into()),
+            }
         }
     }
 }

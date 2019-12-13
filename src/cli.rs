@@ -13,6 +13,12 @@ pub fn build_cli() -> App<'static, 'static> {
         .author("Michael Sanders <michael.sanders@fastmail.com>")
         .about("Apply macOS user defaults in bulk from YAML file.")
         .arg(
+            Arg::with_name("dry-run")
+                .short("d")
+                .long("dry-run")
+                .help("Don’t actually run anything, just show what would be done."),
+        )
+        .arg(
             Arg::with_name("no-env")
                 .long("no-env")
                 .help("Disable environment variable expansion"),
