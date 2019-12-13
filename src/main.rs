@@ -42,22 +42,20 @@ fn try_main(args: ArgMatches) -> Result<()> {
 
     let docs = YamlLoader::load_from_str(&body)?;
     let doc = &docs[0];
-    let defaults = doc.as_hash().ok_or(format!(
-        "Unexpected document type. Expected hash, got {:?}",
-        doc
-    ))?;
+    let defaults = doc
+        .as_hash()
+        .ok_or_else(|| format!("Unexpected document type. Expected hash, got {:?}", doc))?;
     for (domain, values) in defaults {
-        let domain = domain.as_str().ok_or(format!(
-            "Unexpected domain value. Expected string, got {:?}",
-            domain
-        ))?;
+        let domain = domain
+            .as_str()
+            .ok_or_else(|| format!("Unexpected domain value. Expected string, got {:?}", domain))?;
         let values = values
             .as_hash()
-            .ok_or(format!("Unexpected value. Expected hash, got {:?}", values))?;
+            .ok_or_else(|| format!("Unexpected value. Expected hash, got {:?}", values))?;
         for (key, value) in values {
             let key = key
                 .as_str()
-                .ok_or(format!("Unexpected value. Expected string, got {:?}", key))?;
+                .ok_or_else(|| format!("Unexpected value. Expected string, got {:?}", key))?;
             write_default(domain, key, value, expand_env_enabled)?;
         }
     }
