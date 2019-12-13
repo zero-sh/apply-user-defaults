@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/zero-sh/apply-user-defaults.svg?branch=master)](https://travis-ci.org/zero-sh/apply-user-defaults)
+![License](https://img.shields.io/crates/l/assert_cli.svg)
 [![Crates.io](https://img.shields.io/crates/v/apply-user-defaults.svg)](https://crates.io/crates/apply-user-defaults)
 
 # apply-user-defaults
