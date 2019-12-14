@@ -9,7 +9,7 @@ use clap::{App, Arg};
 
 pub fn build_cli() -> App<'static, 'static> {
     App::new("apply-user-defaults")
-        .version("0.1.0")
+        .version("0.1.1")
         .author("Michael Sanders <michael.sanders@fastmail.com>")
         .about("Apply macOS user defaults in bulk from YAML file.")
         .arg(
