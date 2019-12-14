@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/zero-sh/apply-user-defaults.svg?branch=master)](https://travis-ci.org/zero-sh/apply-user-defaults)
-![License](https://img.shields.io/crates/l/assert_cli.svg)
+![License](https://img.shields.io/crates/l/apply-user-defaults.svg)
 [![Crates.io](https://img.shields.io/crates/v/apply-user-defaults.svg)](https://crates.io/crates/apply-user-defaults)
 
 # apply-user-defaults
@@ -70,18 +70,33 @@ To disable, you may pass the flag `--no-env` or escape the dollar sign, e.g.
 
 ## Installation
 
-`apply-user-defaults` can be installed with cargo:
+Pre-compiled binaries are available on the [releases
+page](https://github.com/zero-sh/apply-user-defaults/releases).
+
+### Homebrew
+
+If you're using Homebrew, you can install with a custom tap:
+
+```sh
+$ brew install zero-sh/tap/apply-user-defaults
+```
+
+### Cargo Install
+
+To install via Cargo, run:
 
 ```sh
 $ cargo install apply-user-defaults
 ```
 
+### Building from Source
+
 To build from source:
 
 ```sh
-git clone https://github.com/zero-sh/apply-user-defaults.git
-cd apply-user-defaults
-cargo run -- path-to-file.yml --verbose
+$ git clone https://github.com/zero-sh/apply-user-defaults.git
+$ cd apply-user-defaults
+$ cargo run -- path-to-file.yml --verbose
 ```
 
 ## License
