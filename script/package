@@ -1,0 +1,32 @@
+#!/bin/sh
+set -o errexit -o nounset
+
+TARGET="$1"
+PACKAGE_NAME="$2"
+
+# Finds Cargo's `OUT_DIR` directory from the most recent build.
+#
+# This requires one parameter corresponding to the target directory to search
+# for the build output.
+#
+# See https://github.com/BurntSushi/ripgrep/blob/5ce2d73/ci/utils.sh#L5
+cargo_out_dir() {
+    # This works by finding the most recent stamp file, which is produced by
+    # our build script.
+    find "$1" -name apply-user-defaults-stamp -print0 | \
+        xargs -0 ls -t | \
+        head -n1 | \
+        xargs dirname
+}
+
+mkdir -p "$PACKAGE_NAME"
+mkdir -p "$PACKAGE_NAME/complete"
+cp "target/$TARGET/release/apply-user-defaults" "$PACKAGE_NAME/"
+cp CHANGELOG.md README.md LICENSE-MIT LICENSE-APACHE "$PACKAGE_NAME/"
+
+COMPLETION_OUT_DIR="$(cargo_out_dir "target/$TARGET")"
+cp "$COMPLETION_OUT_DIR/_apply-user-defaults" "$PACKAGE_NAME/complete/"
+cp "$COMPLETION_OUT_DIR/apply-user-defaults.bash" "$PACKAGE_NAME/complete/"
+cp "$COMPLETION_OUT_DIR/apply-user-defaults.fish" "$PACKAGE_NAME/complete/"
+
+tar czvf "$PACKAGE_NAME.tar.gz" "$PACKAGE_NAME"

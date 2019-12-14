@@ -25,11 +25,7 @@ matrix:
       before_deploy:
         - git config --local user.name "Michael Sanders"
         - git config --local user.email "michael.sanders@fastmail.com"
-        - name="apply-user-defaults-$TRAVIS_TAG-$TARGET"
-        - mkdir "$name"
-        - cp "target/$TARGET/release/apply-user-defaults" "$name/"
-        - cp README.md LICENSE-MIT LICENSE-APACHE "$name/"
-        - tar czvf $name.tar.gz $name
+        - script/package "$TARGET" "apply-user-defaults-$TRAVIS_TAG-$TARGET"
       deploy:
         provider: releases
         api_key:
