@@ -1,16 +1,42 @@
 language: rust
+sudo: false
+
+env: TARGET=x86_64-apple-darwin
 os: osx
-matrix:
-  allow_failures:
-    - rust: nightly
-  fast_finish: true
-rust:
-  - stable
-  - beta
-  - nightly
 before_install:
   - rustup component add clippy-preview
 script:
   - cargo build --verbose --all
   - cargo clippy -- -D warnings
   - cargo test --verbose
+  - cargo build --release --target "$TARGET" --locked
+matrix:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+  include:
+    - name: 'Rust: beta'
+      rust: beta
+    - name: 'Rust: nightly'
+      rust: nightly
+      allow_failures: true
+    - name: 'Rust: stable'
+      rust: stable
+      before_deploy:
+        - git config --local user.name "Michael Sanders"
+        - git config --local user.email "michael.sanders@fastmail.com"
+        - name="apply-user-defaults-$TRAVIS_TAG-$TARGET"
+        - mkdir "$name"
+        - cp "target/$TARGET/release/apply-user-defaults" "$name/"
+        - cp README.md LICENSE-MIT LICENSE-APACHE "$name/"
+        - tar czvf $name.tar.gz $name
+      deploy:
+        provider: releases
+        api_key:
+          secure: aVjO/V4gSIuYRZItd68Q2eaIobSJiX5GgePClTcVzfJQysqgDZdIOh+j4aE9SWL2GKy+3e3tMRUL+2ArLjTHKCn0j8VyA15vLPVXSKMQ6h4bhlHO+i5YDw95MrsyoSEKByqq8DO+1qzagX1lvi55+wBsFm7terCh98EHO9HLqKrRljblR+g1ycZ2qcYgRgo2EhBRQvOiJgpSYjEMqvAmViS8M3pjG2mxE1ZRfOj3CHEzecQtZ8lhMKYKs5v75r77WE3EpKyG3WpbjHMxh4m30I7KH0J6zZScDzcVt72TUPB1J/l/BnJjLrbek8tQM4OcegIYkXR7BaEJl1T7buv3VakpZoMXD9rQ8M1QDljj71FHfw44TEXhmx5J88oVtmPuIlR0OWtHvv8Avq1WdOjI2i2ITXJ/WpVYdRkFgozYFWYeBrryqje60chw+9kVdlljClWjQrOZVJxYESzKbQx7KCkA4uEJdTXuMrv9IzPSm8N67uYhJnoqY8OOgCCNB0Rg7VFro2jW3xGPRefg+fVpZuRZN0wXKKtepD7d8SaHUul3skEKn88O8nXAqNQPE4bkGbTVUBxRB2EAlCSebLSnxtujILjDlW4yOsydxAJCOqfJR5w0ZUHjZLVnoPg58sotaDc1T4Nn/cUBHNh2Zex83nPODP3HdOsu9XE2cUWdSpE=
+        file: apply-user-defaults-$TRAVIS_TAG-$TARGET.tar.gz
+        skip_cleanup: true
+        on:
+          repo: zero-sh/apply-user-defaults
+          branch: master
+          tags: true
