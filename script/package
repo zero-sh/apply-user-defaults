@@ -13,7 +13,7 @@ PACKAGE_NAME="$2"
 cargo_out_dir() {
     # This works by finding the most recent stamp file, which is produced by
     # our build script.
-    find "$1" -name apply-user-defaults-stamp -print0 | \
+    find "$1" -name preferences-stamp -print0 | \
         xargs -0 ls -t | \
         head -n1 | \
         xargs dirname
@@ -21,14 +21,14 @@ cargo_out_dir() {
 
 mkdir -p "$PACKAGE_NAME"
 mkdir -p "$PACKAGE_NAME/complete"
-cp "target/$TARGET/release/apply-user-defaults" "$PACKAGE_NAME/"
+cp "target/$TARGET/release/preferences" "$PACKAGE_NAME/"
 cp CHANGELOG.md README.md LICENSE-MIT LICENSE-APACHE "$PACKAGE_NAME/"
 
 COMPLETION_OUT_DIR="$(cargo_out_dir "target/$TARGET")"
-cp "$COMPLETION_OUT_DIR/_apply-user-defaults" "$PACKAGE_NAME/complete/"
-cp "$COMPLETION_OUT_DIR/apply-user-defaults.bash" "$PACKAGE_NAME/complete/"
-cp "$COMPLETION_OUT_DIR/apply-user-defaults.fish" "$PACKAGE_NAME/complete/"
+cp "$COMPLETION_OUT_DIR/_preferences" "$PACKAGE_NAME/complete/"
+cp "$COMPLETION_OUT_DIR/preferences.bash" "$PACKAGE_NAME/complete/"
+cp "$COMPLETION_OUT_DIR/preferences.fish" "$PACKAGE_NAME/complete/"
 
-strip "$PACKAGE_NAME/apply-user-defaults"
+strip "$PACKAGE_NAME/preferences"
 
 tar czvf "$PACKAGE_NAME.tar.gz" "$PACKAGE_NAME"

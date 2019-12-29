@@ -1,10 +1,10 @@
-[![Build Status](https://travis-ci.org/zero-sh/apply-user-defaults.svg?branch=master)](https://travis-ci.org/zero-sh/apply-user-defaults)
-![License](https://img.shields.io/crates/l/apply-user-defaults.svg)
-[![Crates.io](https://img.shields.io/crates/v/apply-user-defaults.svg)](https://crates.io/crates/apply-user-defaults)
+[![Build Status](https://travis-ci.org/zero-sh/preferences.svg?branch=master)](https://travis-ci.org/zero-sh/preferences)
+![License](https://img.shields.io/crates/l/preferences.svg)
+[![Crates.io](https://img.shields.io/crates/v/preferences.svg)](https://crates.io/crates/preferences)
 
-# apply-user-defaults
+# preferences
 
-`apply-user-defaults` is a small utility to set macOS user defaults
+`preferences` is a small utility to set macOS user defaults
 declaratively from a YAML file.
 
 ## Usage
@@ -29,13 +29,13 @@ com.apple.dock:
 Then apply it using:
 
 ```sh
-$ apply-user-defaults path-to-file.yaml
+$ preferences apply path-to-file.yaml
 ```
 
 You can also see what commands are being run by enabling verbose output:
 
 ```sh
-$ apply-user-defaults path-to-file.yaml --verbose
+$ preferences apply path-to-file.yaml --verbose
 ==> defaults write com.apple.dock autohide -bool true
 ==> defaults write com.apple.dock mineffect -string scale
 ==> defaults write com.apple.dock show-process-indicators -bool false
@@ -71,14 +71,14 @@ To disable, you may pass the flag `--no-env` or escape the dollar sign, e.g.
 ## Installation
 
 Pre-compiled binaries are available on the [releases
-page](https://github.com/zero-sh/apply-user-defaults/releases).
+page](https://github.com/zero-sh/preferences/releases).
 
 ### Homebrew
 
 If you're using Homebrew, you can install with a custom tap:
 
 ```sh
-$ brew install zero-sh/tap/apply-user-defaults
+$ brew install zero-sh/tap/preferences
 ```
 
 ### Cargo Install
@@ -86,7 +86,7 @@ $ brew install zero-sh/tap/apply-user-defaults
 To install via Cargo, run:
 
 ```sh
-$ cargo install apply-user-defaults
+$ cargo install preferences
 ```
 
 ### Building from Source
@@ -94,8 +94,8 @@ $ cargo install apply-user-defaults
 To build from source:
 
 ```sh
-$ git clone https://github.com/zero-sh/apply-user-defaults.git
-$ cd apply-user-defaults
+$ git clone https://github.com/zero-sh/preferences.git
+$ cd preferences
 $ cargo run -- path-to-file.yml --verbose
 ```
 

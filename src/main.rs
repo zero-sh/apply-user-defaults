@@ -31,39 +31,44 @@ fn main() {
 }
 
 fn try_main(args: ArgMatches) -> Result<()> {
-    let filename = args.value_of("FILE").unwrap();
-    let body =
-        fs::read_to_string(filename).map_err(|err| format!("Could not open file. {}", err))?;
-    let expand_env_enabled = !args.is_present("no-env");
+    match args.subcommand() {
+        ("apply", Some(args)) => {
+            messages::set_quiet_output(args.is_present("quiet"));
+            messages::set_dry_run_output(args.is_present("dry-run"));
+            messages::set_verbose_output(args.is_present("verbose"));
 
-    messages::set_quiet_output(args.is_present("quiet"));
-    messages::set_dry_run_output(args.is_present("dry-run"));
-    messages::set_verbose_output(args.is_present("verbose"));
+            let filename = args.value_of("FILE").unwrap();
+            let body = fs::read_to_string(filename)
+                .map_err(|err| format!("Could not open file. {}", err))?;
+            let expand_env_enabled = !args.is_present("no-env");
 
-    let docs = YamlLoader::load_from_str(&body)?;
-    let doc = &docs[0];
-    let defaults = doc
-        .as_hash()
-        .ok_or_else(|| format!("Unexpected document type. Expected hash, got {:?}", doc))?;
-    for (domain, values) in defaults {
-        let domain = domain
-            .as_str()
-            .ok_or_else(|| format!("Unexpected domain value. Expected string, got {:?}", domain))?;
-        let values = values
-            .as_hash()
-            .ok_or_else(|| format!("Unexpected value. Expected hash, got {:?}", values))?;
-        for (key, value) in values {
-            let key = key
-                .as_str()
-                .ok_or_else(|| format!("Unexpected value. Expected string, got {:?}", key))?;
-            write_default(domain, key, value, expand_env_enabled)?;
+            let docs = YamlLoader::load_from_str(&body)?;
+            let doc = &docs[0];
+            let defaults = doc
+                .as_hash()
+                .ok_or_else(|| format!("Unexpected document type. Expected hash, got {:?}", doc))?;
+            for (domain, values) in defaults {
+                let domain = domain.as_str().ok_or_else(|| {
+                    format!("Unexpected domain value. Expected string, got {:?}", domain)
+                })?;
+                let values = values
+                    .as_hash()
+                    .ok_or_else(|| format!("Unexpected value. Expected hash, got {:?}", values))?;
+                for (key, value) in values {
+                    let key = key.as_str().ok_or_else(|| {
+                        format!("Unexpected value. Expected string, got {:?}", key)
+                    })?;
+                    write_default(domain, key, value, expand_env_enabled)?;
+                }
+            }
+
+            if !messages::dry_run_output() {
+                message!("Applied defaults.");
+            }
+            Ok(())
         }
+        _ => unreachable!(),
     }
-
-    if !messages::dry_run_output() {
-        message!("Applied defaults.");
-    }
-    Ok(())
 }
 
 /// Writes the given value as the value for key in domain using the `defaults
