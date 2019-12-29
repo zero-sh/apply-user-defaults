@@ -13,9 +13,9 @@ PACKAGE_NAME="$2"
 cargo_out_dir() {
     # This works by finding the most recent stamp file, which is produced by
     # our build script.
-    find "$1" -name apply-user-defaults-stamp -print0 | \
-        xargs -0 ls -t | \
-        head -n1 | \
+    find "$1" -name apply-user-defaults-stamp -print0 |
+        xargs -0 ls -t |
+        head -n1 |
         xargs dirname
 }
 
