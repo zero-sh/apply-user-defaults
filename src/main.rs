@@ -90,7 +90,7 @@ fn write_default(domain: &str, key: &str, value: &Yaml, expand_env_enabled: bool
     if messages::dry_run_output() {
         Ok(())
     } else {
-        let output = Command::new("defaults")
+        let output = Command::new("/usr/bin/defaults")
             .arg("write")
             .arg(domain)
             .arg(key)
