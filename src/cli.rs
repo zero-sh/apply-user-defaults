@@ -5,12 +5,12 @@
 // https://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use clap::{App, Arg};
+use clap::{App, Arg, crate_version, crate_authors};
 
 pub fn build_cli() -> App<'static, 'static> {
     App::new("apply-user-defaults")
-        .version("0.1.2")
-        .author("Michael Sanders <michael.sanders@fastmail.com>")
+        .version(crate_version!())
+        .author(crate_authors!())
         .about("Apply macOS user defaults in bulk from YAML file.")
         .arg(
             Arg::with_name("dry-run")
