@@ -38,7 +38,7 @@ static VERBOSE_OUTPUT: AtomicBool = AtomicBool::new(false);
 #[macro_export]
 macro_rules! message {
     ($($tt:tt)*) => {
-        if !crate::messages::quiet_output() {
+        if !$crate::messages::quiet_output() {
             println!("{} {}", "Success!".underline().green(), format!($($tt)*))
         }
     }
@@ -49,7 +49,7 @@ macro_rules! message {
 #[macro_export]
 macro_rules! verbose_message {
     ($($tt:tt)*) => {
-        if !crate::messages::quiet_output() && crate::messages::verbose_output() {
+        if !$crate::messages::quiet_output() && $crate::messages::verbose_output() {
             println!("{} {}", "==>".bold().blue(), format!($($tt)*));
         }
     }
@@ -60,10 +60,10 @@ macro_rules! verbose_message {
 #[macro_export]
 macro_rules! command_message {
     ($($tt:tt)*) => {
-        if !crate::messages::dry_run_output() {
+        if !$crate::messages::dry_run_output() {
             // Distinguish between verbose and dry-run modes.
             verbose_message!($($tt)*)
-        } else if !crate::messages::quiet_output() {
+        } else if !$crate::messages::quiet_output() {
             println!("{} {}", "==>".bold().yellow(), format!($($tt)*));
         }
     }
