@@ -23,8 +23,6 @@ matrix:
     - name: 'Rust: stable'
       rust: stable
       before_deploy:
-        - git config --local user.name "Michael Sanders"
-        - git config --local user.email "michael.sanders@fastmail.com"
         - script/package "$TARGET" "apply-user-defaults-$TRAVIS_TAG-$TARGET"
       deploy:
         provider: releases
