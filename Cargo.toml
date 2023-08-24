@@ -1,6 +1,6 @@
 [package]
 name = "apply-user-defaults"
-version = "0.1.2"
+version = "0.2.0"
 authors = ["Michael Sanders <crates@michaelsande.rs>"]
 description = "A small utility to set macOS user defaults declaratively from a YAML file."
 repository = "https://github.com/zero-sh/apply-user-defaults"
